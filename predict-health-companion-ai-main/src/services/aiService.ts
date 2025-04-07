@@ -1,22 +1,18 @@
 
 import { Message, AssessmentData, HealthRisk } from '@/types';
-
-// This is a mock service for the AI functionality
-// In a real application, this would connect to a backend API
-
 export async function sendMessageToAI(
   message: string, 
   conversation: Message[], 
   assessmentData?: AssessmentData, 
   healthRisks?: HealthRisk[]
 ): Promise<string> {
-  // Simulate API delay
+  
   await new Promise(resolve => setTimeout(resolve, 1000));
   
-  // Convert message to lowercase for easier matching
+  
   const lowerMessage = message.toLowerCase();
   
-  // Check if the message is a greeting
+
   if (isGreeting(lowerMessage)) {
     if (assessmentData) {
       return `Hello! I'm your Healio health assistant. Based on your assessment, I can provide personalized health insights and recommendations. How can I help you today?`;
@@ -49,7 +45,7 @@ Following the recommendations in your health plan can help minimize these risks.
     }
   }
   
-  // Check if it's a symptom-related question
+
   if (lowerMessage.includes('symptom') || lowerMessage.includes('feel') || lowerMessage.includes('pain') || lowerMessage.includes('ache')) {
     if (assessmentData && assessmentData.symptoms.length > 0) {
       const symptoms = assessmentData.symptoms.join(', ');
@@ -59,7 +55,7 @@ Following the recommendations in your health plan can help minimize these risks.
     }
   }
   
-  // Check if it's a diet-related question
+
   if (lowerMessage.includes('diet') || lowerMessage.includes('food') || lowerMessage.includes('eat') || lowerMessage.includes('nutrition')) {
     if (assessmentData) {
       const dietType = assessmentData.lifestyle.dietType;
@@ -94,7 +90,7 @@ Following the recommendations in your health plan can help minimize these risks.
     }
   }
   
-  // Check if it's a stress/mental health question
+
   if (lowerMessage.includes('stress') || lowerMessage.includes('anxiety') || lowerMessage.includes('depress') || lowerMessage.includes('mental health')) {
     if (assessmentData) {
       const stressLevel = assessmentData.lifestyle.stressLevel;
@@ -122,7 +118,6 @@ Following the recommendations in your health plan can help minimize these risks.
     }
   }
   
-  // Check if it's a general health tip request
   if (lowerMessage.includes('tip') || lowerMessage.includes('advice') || lowerMessage.includes('recommend')) {
     if (assessmentData) {
       return getPersonalizedHealthTips(assessmentData, healthRisks);
@@ -131,7 +126,7 @@ Following the recommendations in your health plan can help minimize these risks.
     }
   }
   
-  // Check for medical history questions
+
   if (lowerMessage.includes('medical history') || lowerMessage.includes('my conditions') || lowerMessage.includes('my health problems')) {
     if (assessmentData && assessmentData.medicalConditions.length > 0) {
       return `Based on your assessment, you've indicated that you have: ${assessmentData.medicalConditions.join(', ')}. It's important to manage these conditions with appropriate medical care. Your personalized recommendations take these conditions into account.`;
@@ -142,7 +137,7 @@ Following the recommendations in your health plan can help minimize these risks.
     }
   }
   
-  // Medications query
+
   if (lowerMessage.includes('medication') || lowerMessage.includes('medicine') || lowerMessage.includes('drug')) {
     if (assessmentData && assessmentData.medications.length > 0) {
       return `According to your assessment, you're currently taking: ${assessmentData.medications.join(', ')}. It's important to take medications as prescribed and discuss any concerns or side effects with your healthcare provider. I can't provide specific medication advice, as this requires medical expertise.`;
@@ -153,7 +148,7 @@ Following the recommendations in your health plan can help minimize these risks.
     }
   }
   
-  // Check for non-health related questions
+  
   if (lowerMessage.includes('capital of india')) {
     return "The capital of India is New Delhi. While I'm happy to answer this question, I want to remind you that my primary purpose is to assist with health-related topics. Is there anything about your health I can help with?";
   }
@@ -166,7 +161,7 @@ Following the recommendations in your health plan can help minimize these risks.
     return `I can provide information about ${message.toLowerCase()}, but I'm primarily designed to assist with health-related questions. Is there something specific about your health you'd like to discuss?`;
   }
   
-  // Default response
+  
   if (assessmentData) {
     return "I'm here to help with your health questions based on your assessment data. I can provide information on health risks, symptoms, lifestyle recommendations, or mental wellbeing. What would you like to know more about?";
   } else {
@@ -174,17 +169,14 @@ Following the recommendations in your health plan can help minimize these risks.
   }
 }
 
-// Helper function to check if a message is a greeting
 function isGreeting(message: string): boolean {
   const greetings = ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'howdy'];
   return greetings.some(greeting => message.toLowerCase().includes(greeting));
 }
 
-// Helper function to generate personalized health tips based on assessment data
 function getPersonalizedHealthTips(assessmentData: AssessmentData, healthRisks?: HealthRisk[]): string {
   let tips = "Based on your assessment, here are some personalized health tips:\n\n";
   
-  // Exercise tips
   const exerciseFreq = assessmentData.lifestyle.exerciseFrequency;
   if (exerciseFreq === 'rarely' || exerciseFreq === 'occasionally') {
     tips += "1) Consider increasing your physical activity. Even adding a 15-minute walk daily can make a difference. Aim to gradually build up to 150 minutes of moderate activity weekly.\n\n";
@@ -192,14 +184,14 @@ function getPersonalizedHealthTips(assessmentData: AssessmentData, healthRisks?:
     tips += "1) Great job maintaining regular physical activity! Continue with your exercise routine and consider incorporating both cardio and strength training for optimal health benefits.\n\n";
   }
   
-  // Sleep tips
+  
   if (assessmentData.lifestyle.sleepHours < 7) {
     tips += "2) Your sleep duration is below the recommended 7-8 hours for adults. Try establishing a regular sleep schedule, creating a comfortable sleep environment, and avoiding screens before bedtime.\n\n";
   } else {
     tips += "2) You're getting adequate sleep, which is excellent for your health. Continue prioritizing good sleep hygiene.\n\n";
   }
   
-  // Diet tips
+  
   tips += `3) With your ${assessmentData.lifestyle.dietType} diet preferences, focus on whole, unprocessed foods. `;
   
   if (healthRisks && healthRisks.some(risk => risk.condition === 'Heart Disease')) {
@@ -210,14 +202,14 @@ function getPersonalizedHealthTips(assessmentData: AssessmentData, healthRisks?:
     tips += "A balanced approach with plenty of fruits, vegetables, lean proteins, and whole grains is recommended.\n\n";
   }
   
-  // Stress management
+
   if (assessmentData.lifestyle.stressLevel > 6) {
     tips += "4) Your stress levels are elevated. Consider stress-reduction techniques such as meditation, deep breathing exercises, yoga, or spending time in nature.\n\n";
   } else {
     tips += "4) Continue practicing stress management through regular relaxation activities and maintaining work-life balance.\n\n";
   }
   
-  // Additional tips based on risk factors
+  
   if (assessmentData.familyHistory.heartDisease) {
     tips += "5) Given your family history of heart disease, regular cardiovascular health check-ups and monitoring your blood pressure and cholesterol levels are important.\n\n";
   }
@@ -229,7 +221,6 @@ function getPersonalizedHealthTips(assessmentData: AssessmentData, healthRisks?:
   return tips;
 }
 
-// Helper function to provide personalized recommendations based on specific health risks
 function getPersonalizedRiskRecommendation(risk: HealthRisk, assessmentData?: AssessmentData): string {
   if (!assessmentData) return "";
   
@@ -257,22 +248,19 @@ function getPersonalizedRiskRecommendation(risk: HealthRisk, assessmentData?: As
 }
 
 export async function analyzeHealthRisks(assessment: AssessmentData): Promise<any> {
-  // This would normally call a backend AI service
-  // For now, we'll use the assessment data to provide more personalized results
   
-  // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 2000));
   
-  // Calculate BMI
+  
   const bmi = assessment.personalInfo.weight / Math.pow(assessment.personalInfo.height/100, 2);
   
-  // Determine heart disease risk based on multiple factors
+
   const heartDiseaseRisk = calculateHeartDiseaseRisk(assessment, bmi);
   
-  // Determine diabetes risk based on multiple factors
+  
   const diabetesRisk = calculateDiabetesRisk(assessment, bmi);
   
-  // Create recommendations based on assessment
+
   const recommendations = generateRecommendations(assessment, heartDiseaseRisk, diabetesRisk);
   
   return {
@@ -298,13 +286,13 @@ function calculateHeartDiseaseRisk(assessment: AssessmentData, bmi: number): { l
   let riskScore = 0;
   const riskFactors: string[] = [];
   
-  // Family history is a major factor
+  
   if (assessment.familyHistory.heartDisease) {
     riskScore += 30;
     riskFactors.push('Family history');
   }
   
-  // Smoking significantly increases risk
+  
   if (assessment.lifestyle.smokingStatus === 'current') {
     riskScore += 25;
     riskFactors.push('Current smoker');
@@ -313,13 +301,13 @@ function calculateHeartDiseaseRisk(assessment: AssessmentData, bmi: number): { l
     riskFactors.push('Former smoker');
   }
   
-  // Diet impacts heart health
+  
   if (assessment.lifestyle.dietType === 'non-vegetarian') {
     riskScore += 10;
     riskFactors.push('Diet high in animal products');
   }
   
-  // Exercise is protective
+  
   if (assessment.lifestyle.exerciseFrequency === 'rarely') {
     riskScore += 15;
     riskFactors.push('Low physical activity');
@@ -327,13 +315,13 @@ function calculateHeartDiseaseRisk(assessment: AssessmentData, bmi: number): { l
     riskScore += 8;
   }
   
-  // Alcohol consumption in moderation
+  
   if (assessment.lifestyle.alcoholConsumption === 'heavy') {
     riskScore += 15;
     riskFactors.push('Heavy alcohol consumption');
   }
   
-  // BMI impact
+  
   if (bmi > 30) {
     riskScore += 15;
     riskFactors.push('Obesity');
@@ -342,7 +330,7 @@ function calculateHeartDiseaseRisk(assessment: AssessmentData, bmi: number): { l
     riskFactors.push('Overweight');
   }
   
-  // Age is a risk factor
+
   if (assessment.personalInfo.age > 60) {
     riskScore += 20;
     riskFactors.push('Age over 60');
@@ -351,13 +339,13 @@ function calculateHeartDiseaseRisk(assessment: AssessmentData, bmi: number): { l
     riskFactors.push('Age over 45');
   }
   
-  // Stress can impact heart health
+  
   if (assessment.lifestyle.stressLevel > 7) {
     riskScore += 10;
     riskFactors.push('High stress levels');
   }
   
-  // Determine risk level
+
   let riskLevel: 'low' | 'moderate' | 'high';
   if (riskScore >= 50) {
     riskLevel = 'high';
@@ -370,7 +358,7 @@ function calculateHeartDiseaseRisk(assessment: AssessmentData, bmi: number): { l
   return {
     level: riskLevel,
     score: riskScore,
-    factors: riskFactors.slice(0, 4) // Return top factors only
+    factors: riskFactors.slice(0, 4) 
   };
 }
 
@@ -378,13 +366,13 @@ function calculateDiabetesRisk(assessment: AssessmentData, bmi: number): { level
   let riskScore = 0;
   const riskFactors: string[] = [];
   
-  // Family history is a major factor
+  
   if (assessment.familyHistory.diabetes) {
     riskScore += 30;
     riskFactors.push('Family history');
   }
   
-  // BMI is a significant factor
+  
   if (bmi > 30) {
     riskScore += 25;
     riskFactors.push('Obesity');
@@ -393,7 +381,7 @@ function calculateDiabetesRisk(assessment: AssessmentData, bmi: number): { level
     riskFactors.push('Overweight');
   }
   
-  // Diet impacts diabetes risk
+  
   const hasDietaryRestrictions = assessment.lifestyle.dietaryRestrictions?.some(
     restriction => restriction.toLowerCase().includes('sugar') || restriction.toLowerCase().includes('carb')
   );
@@ -402,7 +390,7 @@ function calculateDiabetesRisk(assessment: AssessmentData, bmi: number): { level
     riskFactors.push('Diet high in refined carbs');
   }
   
-  // Exercise is protective
+  
   if (assessment.lifestyle.exerciseFrequency === 'rarely') {
     riskScore += 15;
     riskFactors.push('Low physical activity');
@@ -410,13 +398,13 @@ function calculateDiabetesRisk(assessment: AssessmentData, bmi: number): { level
     riskScore += 8;
   }
   
-  // Age is a risk factor
+  
   if (assessment.personalInfo.age > 45) {
     riskScore += 15;
     riskFactors.push('Age over 45');
   }
   
-  // Determine risk level
+  
   let riskLevel: 'low' | 'moderate' | 'high';
   if (riskScore >= 45) {
     riskLevel = 'high';
@@ -429,14 +417,14 @@ function calculateDiabetesRisk(assessment: AssessmentData, bmi: number): { level
   return {
     level: riskLevel,
     score: riskScore,
-    factors: riskFactors.slice(0, 4) // Return top factors only
+    factors: riskFactors.slice(0, 4) 
   };
 }
 
 function generateRecommendations(assessment: AssessmentData, heartRisk: any, diabetesRisk: any): any[] {
   const recommendations = [];
   
-  // Exercise recommendations
+  
   if (assessment.lifestyle.exerciseFrequency === 'rarely' || assessment.lifestyle.exerciseFrequency === 'occasionally') {
     recommendations.push({
       category: 'Exercise',
@@ -464,8 +452,7 @@ function generateRecommendations(assessment: AssessmentData, heartRisk: any, dia
       ]
     });
   }
-  
-  // Diet recommendations
+
   const dietPriority = heartRisk.level === 'high' || diabetesRisk.level === 'high' ? 'high' : 'medium';
   recommendations.push({
     category: 'Diet',
@@ -480,7 +467,7 @@ function generateRecommendations(assessment: AssessmentData, heartRisk: any, dia
     ]
   });
   
-  // Stress management
+
   if (assessment.lifestyle.stressLevel > 6) {
     recommendations.push({
       category: 'Stress Management',
@@ -496,7 +483,7 @@ function generateRecommendations(assessment: AssessmentData, heartRisk: any, dia
     });
   }
   
-  // Sleep recommendations
+  
   if (assessment.lifestyle.sleepHours < 7) {
     recommendations.push({
       category: 'Sleep',
@@ -512,7 +499,7 @@ function generateRecommendations(assessment: AssessmentData, heartRisk: any, dia
     });
   }
   
-  // Specific recommendations for risk factors
+  
   if (heartRisk.level === 'high') {
     recommendations.push({
       category: 'Heart Health',
@@ -547,13 +534,12 @@ function generateRecommendations(assessment: AssessmentData, heartRisk: any, dia
 }
 
 export async function analyzeMedicalDocument(file: File): Promise<string> {
-  // This would normally upload the document to a backend service for analysis
-  // For now, we'll return a more detailed mock response
   
-  // Simulate API delay
+  
+  
   await new Promise(resolve => setTimeout(resolve, 3000));
   
-  // Create a more comprehensive analysis based on file type
+
   if (file.type.includes('pdf')) {
     return "Document analysis complete. I've reviewed your medical records carefully.\n\nI noticed your cholesterol levels are slightly elevated (total cholesterol: 215 mg/dL), with an LDL of 145 mg/dL which is above the recommended range. This could increase your risk for heart disease, especially given your family history.\n\nYour blood pressure readings are within normal range (118/76), which is positive. Blood glucose is at the higher end of normal (98 mg/dL).\n\nI recommend discussing these cholesterol findings with your healthcare provider. Consider dietary changes to reduce saturated fat intake, increase soluble fiber, and maintain regular physical activity which can all help improve your lipid profile.";
   } else if (file.type.includes('image')) {
